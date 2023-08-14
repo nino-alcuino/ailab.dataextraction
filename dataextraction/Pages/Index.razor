@@ -1,0 +1,70 @@
+﻿@page "/"
+@inject IChatService _chatService
+@inject IDataExtractionService _dataExtractService
+
+<PageTitle>Data Extraction</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Data Extraction</MudText>
+
+
+<EditForm Model="@chat" OnValidSubmit="SendToAI">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudPaper Class="pa-4">
+                <MudTextField T="string" Label="Message" @bind-Value="chat.Message" For="@(() => chat.Message)" />
+                <MudFileUpload T="IBrowserFile" For="@(() => chat.FileData)" @bind-File="chat.FileData" OnFilesChanged="UploadFiles" Context="fileDataContext">
+                    <ButtonTemplate>
+                        <MudButton HtmlTag="label"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                                   for="@fileDataContext">
+                            Upload Data to Extract
+                        </MudButton>
+                    </ButtonTemplate>
+                </MudFileUpload>
+
+                <div class="d-flex align-right justify-space-between">
+                    @if (loading)
+                    {
+                        <MudProgressCircular Color="Color.Default" Class="right" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Send</MudButton>
+                    }
+                </div>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+<Chat />
+
+@code {
+    Models.Chat chat = new Models.Chat();
+    bool loading = false;
+
+    async Task SendToAI()
+    {
+        loading = true;
+        _chatService.AddMessage(chat.Message, SenderEnum.User);
+        if (chat.FileData is null)
+            await _dataExtractService.SendToAI(chat);
+        else
+            await _dataExtractService.SendToAIWithFile(chat);
+        loading = false;
+        chat = new Models.Chat();
+    }
+
+    private void UploadFiles(InputFileChangeEventArgs e)
+    {
+        MemoryStream ms = new MemoryStream();
+        var file = e.File.OpenReadStream().CopyToAsync(ms);
+        var bytes = ms.ToArray();
+        //TODO upload the files to the server
+        chat.FileData = e.File;
+        chat.FileDataBytes = bytes;
+    }
+}

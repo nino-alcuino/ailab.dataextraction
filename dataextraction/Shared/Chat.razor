@@ -1,0 +1,34 @@
+﻿@inject IChatService _chatService
+@implements IDisposable
+
+
+@if (_chatService.Messages.Any())
+{
+    <MudGrid>
+        <MudItem xs="12">
+            @foreach (var message in _chatService.Messages.OrderBy(q => q.DateCreated))
+            {
+                @if (message.Sender == SenderEnum.User)
+                {
+                    <MudAlert Severity="Severity.Normal" NoIcon="true" Class="mb-2 mt-3">@message.Sender.ToString(): @message.Message</MudAlert>
+                }
+                else
+                {
+                    <MudAlert Severity="Severity.Info" NoIcon="true" Class="my-2">@message.Sender.ToString(): @message.Message</MudAlert>
+                }
+            }
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        _chatService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _chatService.OnChange -= StateHasChanged;
+    }
+}
