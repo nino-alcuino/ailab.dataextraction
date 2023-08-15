@@ -60,11 +60,6 @@
 
     private void UploadFiles(InputFileChangeEventArgs e)
     {
-        MemoryStream ms = new MemoryStream();
-        var file = e.File.OpenReadStream().CopyToAsync(ms);
-        var bytes = ms.ToArray();
-        //TODO upload the files to the server
         chat.FileData = e.File;
-        chat.FileDataBytes = bytes;
     }
 }

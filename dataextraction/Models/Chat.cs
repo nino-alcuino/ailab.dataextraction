@@ -10,7 +10,6 @@ namespace dataextraction.Models
         [Required]
         public string Message { get; set; } = string.Empty;
         public IBrowserFile? FileData { get; set; }
-        public byte[]? FileDataBytes { get; set; }
         public IBrowserFile? FileResult { get; set; }
         public DateTime DateCreated { get; set; }
     }
