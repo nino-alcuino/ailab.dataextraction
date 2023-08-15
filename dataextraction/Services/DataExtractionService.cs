@@ -5,6 +5,7 @@ using System.Text;
 using Newtonsoft.Json;
 using dataextraction.Models;
 using OfficeOpenXml;
+using MudBlazor;
 
 namespace dataextraction.Services
 {
@@ -69,6 +70,8 @@ namespace dataextraction.Services
         public async Task<string> SendToAIWithFile(Chat chat)
         {
             var file = chat.FileData;
+            if(file == null)
+                return await SendToAI(chat);
 
             var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
@@ -87,7 +90,8 @@ namespace dataextraction.Services
             {
                 for (int col = 1; col <= colCount; col++)
                 {
-                    writer.WriteLine(" Row:" + row + " column:" + col + " Value:" + worksheet.Cells[row, col].Value?.ToString().Trim());
+                    string value = worksheet.Cells[row, col].Value.ToString() ?? "";
+                    writer.WriteLine($" Row:{row} column:{col} Value:{value.Trim()}");
                 }
             }
             writer.Close();
