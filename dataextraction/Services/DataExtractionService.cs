@@ -27,7 +27,8 @@ namespace dataextraction.Services
 
         public async Task<string> SendToAI(Chat chat)
         {
-            var message = chat.Message;
+            var dc = new DefaultContext();
+            var message = $"Your Personality: [{dc.Personality}] Data:[{dc.BookList}] Conditions: [{dc.Conditions}] Student_Message: [{chat.Message}]";
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _AiURL);

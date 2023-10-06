@@ -13,7 +13,7 @@
         <MudItem xs="12" sm="12">
             <MudPaper Class="pa-4">
                 <MudTextField T="string" Label="Message" @bind-Value="chat.Message" For="@(() => chat.Message)" />
-                <MudFileUpload T="IBrowserFile" For="@(() => chat.FileData)" @bind-File="chat.FileData" OnFilesChanged="UploadFiles" Context="fileDataContext">
+                @*<MudFileUpload T="IBrowserFile" For="@(() => chat.FileData)" @bind-File="chat.FileData" OnFilesChanged="UploadFiles" Context="fileDataContext">
                     <ButtonTemplate>
                         <MudButton HtmlTag="label"
                                    Variant="Variant.Filled"
@@ -23,7 +23,7 @@
                             Upload Data to Extract
                         </MudButton>
                     </ButtonTemplate>
-                </MudFileUpload>
+                </MudFileUpload>*@
 
                 <div class="d-flex align-right justify-space-between">
                     @if (loading)
